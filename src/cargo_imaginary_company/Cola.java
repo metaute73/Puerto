@@ -9,11 +9,19 @@ public class Cola {
 	Deque<Automovil>cola = new LinkedList<>();
 	int consecutivo;
 	
-	
-	public void add(Automovil automovil) {
-		if (cola.size() < max)
-			this.cola.add(automovil);
+	public Cola(int consecutivo) {
+		this.consecutivo = consecutivo;
 	}
 	
+	public Boolean add(Automovil automovil) {
+		if (cola.size() < max) {
+			
+			this.cola.add(automovil);
+			return true;
+		}
+		return false;
+		
+	}
+
 	
 }

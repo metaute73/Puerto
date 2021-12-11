@@ -2,6 +2,11 @@ package cargo_imaginary_company;
 
 public class Contenedor {
 	
-	Long serialCode;
+	int serialCode;
 	Pila stack;
+	
+	public Contenedor(int serialCode, Pila stack) {
+		this.serialCode = serialCode;
+		this.stack = stack;
+	}
 }
