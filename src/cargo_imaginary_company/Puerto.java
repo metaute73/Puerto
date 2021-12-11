@@ -10,6 +10,8 @@ public class Puerto {
 	
 	public static void main(String[] args) {
 		
+		Scanner input = new Scanner(System.in);
+		
 		//instancia el puerto con las colas de autos necesarias
 		int k = 1;
 		Cola cola = new Cola(k);
@@ -52,6 +54,45 @@ public class Puerto {
 			}
 		
 		}*/
+		
+		//menu principal
+		print("Bienvenido a Cargo Imaginary Company");
+		
+		while (true) {
+			print("Que desea hacer?\n\npresione:");
+			print("1. para recibir vehiculo o contenedor\n2. para entregar vehiculo o contenedor\n"
+					+ "3. para conocer el numero de contenedores y vehiculos\n"
+					+ "4. para conocer los elementos de alguna pila de contenedores o alguna cola "
+					+ "de automoviles\n5. para conocer serial de pila o cola\n6. para salir del menu"
+					+ "principal");
+			
+			String str = input.next();
+			switch(str) {
+				
+			case "1":
+				print("1");
+				continue;
+			case "2":
+				print("2");
+				continue;
+			case "3":
+				print("3");
+				continue;
+			case "4":
+				print("4");
+				continue;
+			case "5":
+				print("5");
+				continue;
+			case "6":
+				break;
+			}
+			break;
+		}
+		print("Gracias");
+	}
+	static void print(String str) {
+		System.out.println(str);
 	}
 	
 }
