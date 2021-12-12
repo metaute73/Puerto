@@ -5,55 +5,23 @@ public class Puerto {
 	
 	static Vector<Cola>automoviles = new Vector<>();
 	static Vector<Pila>contenedores = new Vector<>();
-	int maxContenedores = 100;
-	int maxAutomoviles = 10;
+	static int maxContenedores = 100;
+	static int maxAutomoviles = 10;
 	
 	public static void main(String[] args) {
 		
 		Scanner input = new Scanner(System.in);
 		
 		//instancia el puerto con las colas de autos necesarias
-		int k = 1;
-		Cola cola = new Cola(k);
-		
-		for (int i = 1; i <= 498; i++) {
-			
-			if (!cola.add(new Automovil(i,cola))) {
-				automoviles.add(cola);
-				k++;
-				cola = new Cola(k);
-				cola.add(new Automovil(i,cola));
-			}
-		}
-		automoviles.add(cola);
-
-		//instancia el puerto con las pilas de contonedores necesarias
-		int m = 1;
-		Pila pila = new Pila(m);
-		for (int j = 1; j <= 98; j++) {
-			
-			if (!pila.push(new Contenedor(j, pila))) {
-				contenedores.add(pila);
-				m++;
-				pila = new Pila(m);
-				pila.push(new Contenedor(j, pila));
-			}
-		}
-		contenedores.add(pila);
-		/*for(Cola c : automoviles) {
-			for (Automovil a : c.cola) {
-				System.out.println(a.serialCode + " " + a.queue.consecutivo);
-				
-			}
+		for (int i = 1; i<= 98; i++) {
+			addingAutomovil(new Automovil(i));
 		}
 		
-		for(Pila c :contenedores) {
-			for (Contenedor a : c.stack) {
-				System.out.println(a.serialCode + " " + a.stack.consecutivo);
-				
-			}
 		
-		}*/
+		for (int i = 1; i<= 498; i++) {
+			addingContenedor(new Contenedor(i));
+		}
+	
 		
 		//menu principal
 		print("Bienvenido a Cargo Imaginary Company");
@@ -94,5 +62,39 @@ public class Puerto {
 	static void print(String str) {
 		System.out.println(str);
 	}
+	static void addingAutomovil(Automovil auto) {
+		if (automoviles.size() != 11) {
+			for(Cola c : automoviles) {
+				if (c.cola.size() != 10) {
+					auto.queue = c;
+					c.cola.add(auto);
+					return;
+				}
+			}
+			automoviles.add(new Cola(automoviles.size() + 1));
+			auto.queue = automoviles.lastElement();
+			automoviles.lastElement().add(auto);
+			return;
+		}
+
+	}
+	static void addingContenedor(Contenedor contenedor) {
+		if (contenedores.size() != 101) {
+			for(Pila p : contenedores) {
+				if (p.stack.size() != 5) {
+					contenedor.stack = p;
+					p.stack.push(contenedor);
+					return;
+				}
+			}
+			contenedores.add(new Pila(contenedores.size() + 1));
+			contenedor.stack = contenedores.lastElement();
+			contenedores.lastElement().push(contenedor);
+			return;
+		}
+
+		
+	}
+	
 	
 }

@@ -5,6 +5,10 @@ public class Automovil {
 	int serialCode;
 	Cola queue;
 	
+	public Automovil(int serialCode) {
+		this.serialCode = serialCode;
+	}
+	
 	public Automovil(int serialCode, Cola queue) {
 		this.serialCode = serialCode;
 		this.queue = queue;
