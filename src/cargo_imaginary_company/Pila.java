@@ -12,12 +12,10 @@ public class Pila {
 		this.consecutivo = consecutivo;
 	}
 	
-	public Boolean push(Contenedor contenedor) {
+	public void push(Contenedor contenedor) {
 		if (stack.size() < max) {
 			this.stack.push(contenedor);
-			return true;
 		}
-		return false;
 	}
 	
 }

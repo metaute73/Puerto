@@ -13,14 +13,10 @@ public class Cola {
 		this.consecutivo = consecutivo;
 	}
 	
-	public Boolean add(Automovil automovil) {
+	public void add(Automovil automovil) {
 		if (cola.size() < max) {
-			
-			this.cola.add(automovil);
-			return true;
-		}
-		return false;
-		
+			this.cola.add(automovil);	
+		}	
 	}
 
 	
