@@ -5,7 +5,7 @@ import java.util.LinkedList;
 
 public class Cola {
 	
-	int max = 5;
+	int max = 10;
 	Deque<Automovil>cola = new LinkedList<>();
 	int consecutivo;
 	

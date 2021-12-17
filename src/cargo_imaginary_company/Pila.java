@@ -4,7 +4,7 @@ import java.util.*;
 
 public class Pila {
 	
-	int max = 10;
+	int max = 5;
 	Deque<Contenedor>stack = new LinkedList<>();
 	int consecutivo;
 	

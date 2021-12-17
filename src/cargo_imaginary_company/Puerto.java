@@ -7,6 +7,7 @@ public class Puerto {
 	static Vector<Pila>contenedores = new Vector<>();
 	static int maxContenedores = 0;
 	static int maxAutomoviles = 0;
+	static LinkedList<Contenedor>auxiliar = new LinkedList<>();
 	
 	public static void main(String[] args) {
 		
@@ -16,8 +17,8 @@ public class Puerto {
 		for (int i = 1; i<= 98; i++) {
 			addingAutomovil(new Automovil(i));
 		}
-		/*
-		for (Cola a : automoviles) {
+		
+		/*for (Cola a : automoviles) {
 			for (Automovil k : a.cola)
 				print(k.serialCode + " " + k.queue.consecutivo);
 		}*/
@@ -26,8 +27,8 @@ public class Puerto {
 		for (int i = 1; i<= 498; i++) {
 			addingContenedor(new Contenedor(i));
 		}
-		/*
-		for (Pila a : contenedores) {
+		
+		/*for (Pila a : contenedores) {
 			for (Contenedor k : a.stack)
 				print(k.serialCode + " " + k.stack.consecutivo);
 		}*/
@@ -40,14 +41,36 @@ public class Puerto {
 			print("1. para recibir vehiculo o contenedor\n2. para entregar vehiculo o contenedor\n"
 					+ "3. para conocer el numero de contenedores y vehiculos\n"
 					+ "4. para conocer los elementos de alguna pila de contenedores o alguna cola "
-					+ "de automoviles\n5. para conocer serial de pila o cola\n6. para salir del menu"
+					+ "de automoviles\n5. para conocer el serial de pila o cola donde esta ubicado algun "
+					+ "contenedor o vehiculo \n6. para salir del menu"
 					+ "principal");
 			
 			String str = input.next();
 			switch(str) {
 				
 			case "1":
-				print("1");
+				while(true) {
+					print("Que se desea recibir?\npresione: \nC. Contenedor\nV. Vehiculo\ncualquier otra "
+							+ "tecla para volver");
+					String ans = input.next().toUpperCase();
+					switch(ans) {
+					case "C":
+						print("ingrese el serial del contenedor a ser recibido: ");
+						int serialC = input.nextInt();
+						print("se recibio el contenedor " + serialC + " exitosamente, y se ha ubicado "
+								+ "en la pila " + addingContenedor(new Contenedor(serialC)));
+						continue;
+					case "V":
+						print("ingrese el serial del vehiculo a ser recibido: ");
+						int serialV = input.nextInt();
+						print("se recibio el vehiculo " + serialV + " exitosamente, y se ha ubicado "
+								+ "en la cola " + addingAutomovil(new Automovil(serialV)));
+						continue;
+					default:
+						break;
+					}
+					break;
+				}
 				continue;
 			case "2":
 				while(true) {
@@ -57,11 +80,24 @@ public class Puerto {
 				
 				switch (answer) {
 					case "C":
+						print("ingrese el serial del contenedor");
+						int serialCodeC = input.nextInt();
+						int p = removeContenedor(serialCodeC);
+						if (p > 0) {
+							print("se entrego exitosamente el contenedor " + serialCodeC + " el cual "
+									+ "se encontraba en la pila " + p);
+						}
+						System.out.println();
 						continue;
 					case "V":
 						print("ingrese el serial del vehiculo: ");
 						int serialCode = input.nextInt();
-						removeAutomovil(serialCode);
+						int s = removeAutomovil(serialCode);
+						if (s > 0) {
+							print("se entrego exitosamente el vehiculo " + serialCode + " el cual "
+									+ "se encontraba en la cola " + s);
+						}
+						System.out.println();
 						continue;
 					default:
 						break;
@@ -77,16 +113,24 @@ public class Puerto {
 				continue;
 			case "5":
 				print("5");
+				/*for (Pila a : contenedores) {
+					for (Contenedor k : a.stack)
+						print(k.serialCode + " " + k.stack.consecutivo);
+				}*/
+				for (Cola a : automoviles) {
+					for (Automovil k : a.cola)
+						print(k.serialCode + " " + k.queue.consecutivo);
+				}
 				continue;
 			case "6":
 				break;
 			}
 			break;
 		}
-		for (Cola a : automoviles) {
+		/*for (Cola a : automoviles) {
 			for (Automovil k : a.cola)
 				print(k.serialCode + " " + k.queue.consecutivo);
-		}
+		}*/
 		print("Gracias");
 		input.close();
 	}
@@ -96,45 +140,81 @@ public class Puerto {
 		System.out.println(str);
 	}
 	//esta funcion agrega un vehiculo
-	static void addingAutomovil(Automovil auto) {
+	static int addingAutomovil(Automovil auto) {
+		
 		if (maxAutomoviles < 100) {
 			for(Cola c : automoviles) {
 				if (c.cola.size() != 10) {
 					auto.queue = c;
 					c.cola.add(auto);
 					maxAutomoviles++;
-					return;
+					return c.consecutivo;
 				}
 			}
 			automoviles.add(new Cola(automoviles.size() + 1));
 			auto.queue = automoviles.lastElement();
 			automoviles.lastElement().add(auto);
 			maxAutomoviles++;
-			return;
+			return automoviles.lastElement().consecutivo;
 		}
+		return 0;
 
 	}
 	//esta funcion agrega un contenedor
-	static void addingContenedor(Contenedor contenedor) {
+	static int addingContenedor(Contenedor contenedor) {
 		if (maxContenedores < 500) {
 			for(Pila p : contenedores) {
 				if (p.stack.size() != 5) {
 					contenedor.stack = p;
 					p.stack.push(contenedor);
 					maxContenedores++;
-					return;
+					return p.consecutivo;
 				}
 			}
 			contenedores.add(new Pila(contenedores.size() + 1));
 			contenedor.stack = contenedores.lastElement();
 			contenedores.lastElement().push(contenedor);
 			maxContenedores++;
-			return;
+			return contenedores.lastElement().consecutivo;
 		}
+		return 0;
 	}
-	
-	static void removeAutomovil(int serial) {
-		
+	static int removeContenedor(int serial) {
+		int end = 0;
+		Iterator<Pila> pilas = contenedores.listIterator();
+		while(pilas.hasNext()) {
+			Pila pila = pilas.next();
+			for (Contenedor c : pila.stack) {
+				//System.out.println(c.serialCode);
+				if (c.serialCode == serial) {
+					if (c != pila.stack.getFirst()) {
+						int first = pila.stack.peek().serialCode;
+						print("se han tenido que mover los siguientes contenedores:");
+						while(first != c.serialCode) {
+							Contenedor contenedor = pila.stack.pollFirst();
+							int change = finding(contenedor);
+							if (change != 0) 
+								System.out.println(contenedor.serialCode + " hacia la pila " + change);
+							first = pila.stack.peek().serialCode;
+						}
+						
+						System.out.println();
+						
+					}
+					end = pila.consecutivo;
+					pila.stack.pollFirst();
+					while(!auxiliar.isEmpty()) {
+						pila.push(auxiliar.pop());
+					}
+					break;
+					
+				}
+			}
+		}
+		return end;
+	}
+	static int removeAutomovil(int serial) {
+		int end = 0;
 		Iterator<Cola>colas = automoviles.listIterator();
 		while (colas.hasNext()) {
 			Cola cola = colas.next();
@@ -144,20 +224,43 @@ public class Puerto {
 						int first = cola.cola.getFirst().serialCode;
 						System.out.println("se han tenido que mover los vehiculos:");
 						while(first != a.serialCode) {
+							
 							Automovil auto = cola.cola.poll();
 							int change = finding(auto);
 							if (change != 0)
 								System.out.println(auto.serialCode + " hacia la cola " + change);
-							first++;
+							first = cola.cola.getFirst().serialCode;
 							
 						}
 						System.out.println();
 					}
+					end = cola.consecutivo;
 					cola.cola.poll();
 					break;
 				}
 			}
 		}
+		return end;
+	}
+	static int finding(Contenedor c) {
+		int s = 0;
+		boolean status = false;
+		for (Pila p : contenedores) {
+			if (p.stack.size() < 5 && c.stack != p) {
+				p.stack.push(c);
+				c.stack = p;
+				s = p.consecutivo;
+				status = true;
+				break;
+			}
+		}
+		if (!status) {
+			print("debido a espacio el contenedor " + c.serialCode + " se ha tenido que ubicar "
+					+ "en la pila auxiliar para posteriormente ser puesto de nuevo "
+					+ "en su pila original");
+			auxiliar.push(c);
+		}
+		return s;
 	}
 	
 	static int finding(Automovil a) {
@@ -173,7 +276,8 @@ public class Puerto {
 			}
 		}
 		if (!status) {
-			print("debido a espacio el vehiculo " + a.serialCode + " se ha tenido que ubicar "
+			print("debido a espacio el vehiculo " + a.serialCode + " se ha tenido que estacionar "
+					+ "en la cola auxiliar para posteriormente ser ubicado de nuevo "
 					+ "en su cola original");
 			a.queue.add(a);
 		}
