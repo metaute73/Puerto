@@ -1,6 +1,10 @@
 package cargo_imaginary_company;
 import java.util.*;
 
+import errors.ErrorCapacidadMaxima;
+import errors.ErrorSerial;
+import errors.ErrorSerialNoEncontrado;
+
 public class Puerto {
 	
 	static Vector<Cola>automoviles = new Vector<>();
@@ -15,7 +19,12 @@ public class Puerto {
 		
 		//instancia el puerto con las colas de autos necesarias
 		for (int i = 1; i<= 98; i++) {
-			addingAutomovil(new Automovil(i));
+			try {
+				addingAutomovil(new Automovil(i));
+			} catch (ErrorCapacidadMaxima e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
 		}
 		
 		/*for (Cola a : automoviles) {
@@ -25,7 +34,12 @@ public class Puerto {
 		
 		//instancia el puerto con las pilas de contenedores necesarias
 		for (int i = 1; i<= 498; i++) {
-			addingContenedor(new Contenedor(i));
+			try {
+				addingContenedor(new Contenedor(i));
+			} catch (ErrorCapacidadMaxima e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
 		}
 		
 		/*for (Pila a : contenedores) {
@@ -57,14 +71,41 @@ public class Puerto {
 					case "C":
 						print("ingrese el serial del contenedor a ser recibido: ");
 						int serialC = input.nextInt();
-						print("se recibio el contenedor " + serialC + " exitosamente, y se ha ubicado "
-								+ "en la pila " + addingContenedor(new Contenedor(serialC)));
+						Contenedor ke = new Contenedor(serialC);
+						try {
+							checkExistance(ke, serialC);
+						} catch (ErrorSerial e2) {
+							// TODO Auto-generated catch block
+							System.out.println(e2.getMessage());
+							continue;
+						}
+						try {
+							print("se recibio el contenedor " + serialC + " exitosamente, y se ha ubicado "
+									+ "en la pila " + addingContenedor(ke));
+						} catch (ErrorCapacidadMaxima e1) {
+							// TODO Auto-generated catch block
+							System.out.println(e1.getMessage());
+						}
 						continue;
 					case "V":
 						print("ingrese el serial del vehiculo a ser recibido: ");
 						int serialV = input.nextInt();
-						print("se recibio el vehiculo " + serialV + " exitosamente, y se ha ubicado "
-								+ "en la cola " + addingAutomovil(new Automovil(serialV)));
+						Automovil ak = new Automovil(serialV);
+						try {
+							checkExistance(ak, serialV);
+						} catch (ErrorSerial e1) {
+							// TODO Auto-generated catch block
+							System.out.println(e1.getMessage());
+							continue;
+						}
+						try {
+							print("se recibio el vehiculo " + serialV + " exitosamente, y se ha ubicado "
+									+ "en la cola " + addingAutomovil(ak));
+						} catch (ErrorCapacidadMaxima e) {
+							// TODO Auto-generated catch block
+							System.out.println(e.getMessage());
+							continue;
+						}
 						continue;
 					default:
 						break;
@@ -82,22 +123,38 @@ public class Puerto {
 					case "C":
 						print("ingrese el serial del contenedor");
 						int serialCodeC = input.nextInt();
-						int p = removeContenedor(serialCodeC);
+					int p;
+					try {
+						p = removeContenedor(serialCodeC);
 						if (p > 0) {
 							print("se entrego exitosamente el contenedor " + serialCodeC + " el cual "
 									+ "se encontraba en la pila " + p);
 						}
 						System.out.println();
+						} catch (ErrorSerialNoEncontrado e1) {
+							// TODO Auto-generated catch block
+							System.out.println(e1.getMessage());
+							continue;
+						}
+						
 						continue;
 					case "V":
 						print("ingrese el serial del vehiculo: ");
 						int serialCode = input.nextInt();
-						int s = removeAutomovil(serialCode);
-						if (s > 0) {
-							print("se entrego exitosamente el vehiculo " + serialCode + " el cual "
-									+ "se encontraba en la cola " + s);
+						int s;
+						try {
+							s = removeAutomovil(serialCode);
+							if (s > 0) {
+								print("se entrego exitosamente el vehiculo " + serialCode + " el cual "
+										+ "se encontraba en la cola " + s);
+							}
+							System.out.println();
+						} catch (ErrorSerialNoEncontrado e) {
+							// TODO Auto-generated catch block
+							System.out.println(e.getMessage());
+							continue;
 						}
-						System.out.println();
+						
 						continue;
 					default:
 						break;
@@ -140,7 +197,7 @@ public class Puerto {
 		System.out.println(str);
 	}
 	//esta funcion agrega un vehiculo
-	static int addingAutomovil(Automovil auto) {
+	static int addingAutomovil(Automovil auto) throws ErrorCapacidadMaxima {
 		
 		if (maxAutomoviles < 100) {
 			for(Cola c : automoviles) {
@@ -157,11 +214,14 @@ public class Puerto {
 			maxAutomoviles++;
 			return automoviles.lastElement().consecutivo;
 		}
-		return 0;
+		else {
+			throw new ErrorCapacidadMaxima();
+		}
+		
 
 	}
 	//esta funcion agrega un contenedor
-	static int addingContenedor(Contenedor contenedor) {
+	static int addingContenedor(Contenedor contenedor) throws ErrorCapacidadMaxima {
 		if (maxContenedores < 500) {
 			for(Pila p : contenedores) {
 				if (p.stack.size() != 5) {
@@ -176,10 +236,12 @@ public class Puerto {
 			contenedores.lastElement().push(contenedor);
 			maxContenedores++;
 			return contenedores.lastElement().consecutivo;
+		}else {
+			throw new ErrorCapacidadMaxima();
 		}
-		return 0;
+		
 	}
-	static int removeContenedor(int serial) {
+	static int removeContenedor(int serial) throws ErrorSerialNoEncontrado {
 		int end = 0;
 		Iterator<Pila> pilas = contenedores.listIterator();
 		while(pilas.hasNext()) {
@@ -211,9 +273,12 @@ public class Puerto {
 				}
 			}
 		}
+		if (end == 0) {
+			throw new ErrorSerialNoEncontrado();
+		}
 		return end;
 	}
-	static int removeAutomovil(int serial) {
+	static int removeAutomovil(int serial) throws ErrorSerialNoEncontrado {
 		int end = 0;
 		Iterator<Cola>colas = automoviles.listIterator();
 		while (colas.hasNext()) {
@@ -239,6 +304,9 @@ public class Puerto {
 					break;
 				}
 			}
+		}
+		if (end == 0) {
+			throw new ErrorSerialNoEncontrado();
 		}
 		return end;
 	}
@@ -283,6 +351,33 @@ public class Puerto {
 		}
 		
 		return s;
+	}
+	
+	static <T> void checkExistance(T x, int k) throws ErrorSerial {
+		Boolean status = true;
+		if (x instanceof Contenedor) {
+			for (Pila p : contenedores) {
+				for (Contenedor c : p.stack) {
+					if (c.serialCode == k) {
+						status = false;
+						break;
+					}
+				}
+				
+			}
+		}else {
+			for (Cola c : automoviles) {
+				for (Automovil a : c.cola) {
+					if (a.serialCode == k) {
+						status = false;
+						break;
+					}
+				}
+			}
+		}
+		if (!status) {
+			throw new ErrorSerial();
+		}
 	}
 	
 }
