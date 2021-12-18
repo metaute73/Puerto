@@ -320,6 +320,7 @@ public class Puerto {
 					while (!auxiliar.isEmpty()) {
 						pila.push(auxiliar.pop());
 					}
+					maxContenedores--;
 					break;
 				}
 			}
@@ -353,6 +354,7 @@ public class Puerto {
 					}
 					end = cola.consecutivo;
 					cola.cola.poll();
+					maxAutomoviles--;
 					break;
 				}
 			}
