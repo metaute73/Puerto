@@ -168,18 +168,10 @@ public class Puerto {
 					String answer = input.next().toUpperCase();
 					switch (answer) {
 					case "A":
-						int suma1 = 0;
-						for (Cola c: automoviles) {
-							suma1 += c.cola.size();
-						}
-						System.out.println(suma1);
+						System.out.println(maxContenedores);
 						continue;
 					case "B":
-						int suma2 = 0;
-						for (Pila c: contenedores) {
-							suma2 += c.stack.size();
-						}
-						System.out.println(suma2);
+						System.out.println(maxAutomoviles);
 						continue;
 					default:
 						break;
@@ -224,12 +216,12 @@ public class Puerto {
 					case "A": 
 						System.out.println("Ingrese serial del contenedor: ");
 						int serialContenedor = input.nextInt();
-						System.out.println("El serial de la pila es: " + FindContenedorBySerialCode(serialContenedor));
+						System.out.println("El serial de la pila es: " + FindPilaBySerialCode(serialContenedor));
 						continue;
 					case "B":
 						System.out.println("Ingrese serial del automovil: ");
 						int serialAuto = input.nextInt();
-						System.out.println("El serial de la cola es: " + FindContenedorBySerialCode(serialAuto));
+						System.out.println("El serial de la cola es: " + FindColaBySerialCode(serialAuto));
 						continue;
 						
 					default:
@@ -412,6 +404,40 @@ public class Puerto {
 		return s;
 	}
 	
+	
+
+	static int FindPilaBySerialCode(int k) throws ErrorSerial {
+		Boolean status = false;
+			for (Pila p : contenedores) {
+				for (Contenedor c : p.stack) {
+					if (c.serialCode == k) {
+						status = true;
+						return c.stack.consecutivo;
+					}
+				}
+			}
+		if (!status) {
+			throw new ErrorSerial();
+		}
+		return -1;
+	}
+	
+	static int FindColaBySerialCode(int k) throws ErrorSerial {
+		Boolean status = false;
+			for (Cola p : automoviles) {
+				for (Automovil c : p.cola) {
+					if (c.serialCode == k) {
+						status = true;
+						return c.queue.consecutivo;
+					}
+				}
+			}
+		if (!status) {
+			throw new ErrorSerial();
+		}
+		return -1;
+	}
+
 	
 	
 
